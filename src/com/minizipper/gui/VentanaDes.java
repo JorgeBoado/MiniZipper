@@ -77,7 +77,7 @@ public class VentanaDes {
 		JButton btn_Atras = new JButton("Atras");
 		btn_Atras.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Inicio.init();
+				//Inicio.init();
 				frame.dispose();
 			}
 		});

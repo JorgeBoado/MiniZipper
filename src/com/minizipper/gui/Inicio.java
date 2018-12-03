@@ -14,23 +14,7 @@ import java.awt.event.ActionEvent;
 
 public class Inicio {
 
-	private JFrame frame;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void init() {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Inicio window = new Inicio();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	public static JFrame frame;
 
 	/**
 	 * Create the application.

@@ -3,11 +3,7 @@ package com.minizipper.gui;
 import java.io.File;
 
 import javax.swing.JFileChooser;
-/**
- * 
- * @author Ibon Alonso
- *
- */
+
 public class SeleccionarArchivo {
 	
 	public static String sacarPathArchivo () {
