@@ -1,7 +1,6 @@
 package com.minizipper.gui;
 
 import java.awt.*;
-
 import javax.swing.*;
 
 public class VentanaCom {

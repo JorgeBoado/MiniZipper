@@ -73,8 +73,8 @@ public class Launcher {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Zip.zip(ventanaCom.getPath());
-                // TODO añadir threads
-                // TODO generar una ventana para saber que se esta comprimiendo
+                ventanaCom.getFrame().dispose();
+                // TODO arreglar multi-thread (casca al abrir varios mas de un thread)
             }
         });
 
