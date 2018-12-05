@@ -1,5 +1,8 @@
 package com.minizipper.gui;
 
+import com.minizipper.unzip.UnZip;
+import com.minizipper.zip.Zip;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -69,7 +72,9 @@ public class Launcher {
         ventanaCom.getBtn_Comprimir().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                Zip.zip(ventanaCom.getPath());
+                // TODO añadir threads
+                // TODO generar una ventana para saber que se esta comprimiendo
             }
         });
 
@@ -109,7 +114,9 @@ public class Launcher {
         ventanaDes.getBtn_Descomprimir().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                UnZip.unZip(ventanaDes.getPath());
+                // TODO añadir threads
+                // TODO generar una ventana para saber que se esta descomprimiendo
             }
         });
 
