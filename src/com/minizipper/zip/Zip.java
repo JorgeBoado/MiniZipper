@@ -2,8 +2,12 @@ package com.minizipper.zip;
 
 import com.minizipper.gui.VentanaComThread;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import java.io.File;
@@ -16,27 +20,29 @@ import java.util.List;
 public class Zip extends Thread{
 
     private List<String> fileList;
-    //TODO Quitar estaticos
-    private static String outputZipFile = "Folder.zip";
-    private static String sourceFolder = "D:\\c";
+    private String outputZipFile;
+    private String sourceFolder;
     private VentanaComThread window;
-    private long folderSize = 0;
+    private long totalSize = 0;
     private long procesedSize = 0;
+    private boolean cancel = false;
+    private boolean wait = false;
 
-    private Zip() {
+    private Zip(String source) {
         fileList = new ArrayList<>();
-    }
-
-    public static void zip(String source) {
         sourceFolder = source;
         outputZipFile = source + ".zip";
         outputZipFile = source.concat(".zip");
+    }
 
-        Zip appZip = new Zip();
+    public static void zip(String source) {
+        Zip appZip = new Zip(source);
         appZip.start();
     }
 
     private void zipIt(String zipFile) {
+
+        long time = new Timestamp(System.currentTimeMillis()).getTime()/100;
 
         byte[] buffer = new byte[1024];
         String source = new File(sourceFolder).getName();
@@ -50,6 +56,7 @@ public class Zip extends Thread{
             FileInputStream in = null;
 
             for (String file : this.fileList) {
+                if(cancel) {break;}
                 System.out.println("File Added : " + file);
                 window.getTxtCurrentFile().setText(file);
                 ZipEntry ze = new ZipEntry(source + File.separator + file);
@@ -58,12 +65,20 @@ public class Zip extends Thread{
                     in = new FileInputStream(sourceFolder + File.separator + file);
                     int len;
                     while ((len = in.read(buffer)) > 0) {
+                        while(wait){
+                            System.out.print("");
+                        }
+                        if(cancel){break;}
                         zos.write(buffer, 0, len);
                         procesedSize+=len;
-                        window.getComProBar().setValue((int)((procesedSize*100)/folderSize));
+
+                        if((new Timestamp(System.currentTimeMillis()).getTime()/100)!=time){
+                            System.out.println(new Timestamp(System.currentTimeMillis()).getTime()+" -- "+time);
+                            updateGUI();
+                            time=new Timestamp(System.currentTimeMillis()).getTime()/100;
+                        }
                     }
                 } finally {
-
                     in.close();
                 }
             }
@@ -81,13 +96,19 @@ public class Zip extends Thread{
                 e.printStackTrace();
             }
         }
+
+        if (cancel){
+            File delFile = new File(outputZipFile);
+            delFile.delete();
+        }
+
     }
 
     private void generateFileList(File node) {
         // add file only
         if (node.isFile()) {
             fileList.add(generateZipEntry(node.toString()));
-            folderSize+=node.length();
+            totalSize +=node.length();
         }
 
         if (node.isDirectory()) {
@@ -105,6 +126,7 @@ public class Zip extends Thread{
     @Override
     public void run() {
         window = new VentanaComThread();
+        setListeners();
         window.getFrame().setVisible(true);
         generateFileList(new File(sourceFolder));
         zipIt(outputZipFile);
@@ -115,9 +137,41 @@ public class Zip extends Thread{
         window.getBtnCancelar().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO Añadir evento de cancelar
+                int confirm;
+                wait = true;
+                confirm = JOptionPane.showConfirmDialog (window.getFrame(), "¿Estas seguro de que deseas cancelar la compresion?","Cancelar",JOptionPane.YES_NO_OPTION);
+                if(confirm==0){
+                    cancel = true;
+                    window.getFrame().dispose();
+                }
+                wait = false;
             }
         });
+    }
+
+    private String toSizeUnit(long length, boolean hasUnit){
+
+        double size = (double)length/1024;
+        String[] unit = {" Kb", " Mb", " Gb"};
+
+        //TODO arreglar unidades
+        int x=0;
+        while((size%1024)>1.0){
+            size = size/1024;
+            x++;
+        }
+
+        if(hasUnit){
+            return (new DecimalFormat("#.##").format(size) + unit[x]);
+        }
+        else{
+            return (new DecimalFormat("#.##").format(size));
+        }
+    }
+
+    private void updateGUI(){
+        window.getComProBar().setValue((int)((procesedSize*100)/ totalSize));
+        window.getTxtComSize().setText("Total: \t"+toSizeUnit(procesedSize, false)+" / "+toSizeUnit(totalSize, true));
     }
 
 }

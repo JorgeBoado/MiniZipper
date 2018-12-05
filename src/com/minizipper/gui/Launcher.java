@@ -63,7 +63,6 @@ public class Launcher {
         ventanaCom.getBtn_Examinar().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("alfo");
                 ventanaCom.setPath(SeleccionarArchivo.sacarPathDirectorio());
                 ventanaCom.getTxt_Path().setText(ventanaCom.getPath());
             }
@@ -74,7 +73,6 @@ public class Launcher {
             public void actionPerformed(ActionEvent e) {
                 Zip.zip(ventanaCom.getPath());
                 ventanaCom.getFrame().dispose();
-                // TODO arreglar multi-thread (casca al abrir varios mas de un thread)
             }
         });
 

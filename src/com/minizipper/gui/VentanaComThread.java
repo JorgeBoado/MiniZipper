@@ -5,8 +5,9 @@ import javax.swing.*;
 
 public class VentanaComThread {
 
-    private JDialog frame;
+    private JFrame frame;
     private JPanel panel;
+    private JLabel txtComSize;
     private JProgressBar ComProBar;
     private JLabel txtCurrentFile;
     private JButton btnCancelar;
@@ -19,7 +20,7 @@ public class VentanaComThread {
      * Initialize the contents of the frame.
      */
     private void initialize() {
-        frame = new JDialog();
+        frame = new JFrame();
         frame.setBounds(100, 100, 400, 200);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.getContentPane().setLayout(new CardLayout(0, 0));
@@ -37,6 +38,11 @@ public class VentanaComThread {
         ComProBar.setBounds(10, 79, 364, 29);
         panel.add(ComProBar);
 
+        txtComSize = new JLabel("");
+        txtComSize.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        txtComSize.setBounds(10, 11, 364, 23);
+        panel.add(txtComSize);
+
         txtCurrentFile = new JLabel("");
         txtCurrentFile.setFont(new Font("Tahoma", Font.PLAIN, 10));
         txtCurrentFile.setBounds(10, 61, 364, 13);
@@ -48,11 +54,11 @@ public class VentanaComThread {
         panel.add(btnCancelar);
     }
 
-    public JDialog getFrame() {
+    public JFrame getFrame() {
         return frame;
     }
 
-    public void setFrame(JDialog frame) {
+    public void setFrame(JFrame frame) {
         this.frame = frame;
     }
 
@@ -62,6 +68,14 @@ public class VentanaComThread {
 
     public void setPanel(JPanel panel) {
         this.panel = panel;
+    }
+
+    public JLabel getTxtComSize() {
+        return txtComSize;
+    }
+
+    public void setTxtComSize(JLabel txtComSize) {
+        this.txtComSize = txtComSize;
     }
 
     public JProgressBar getComProBar() {
