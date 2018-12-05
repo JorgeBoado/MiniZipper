@@ -1,6 +1,5 @@
 package zip;
 
-import java.io.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import java.io.File;
