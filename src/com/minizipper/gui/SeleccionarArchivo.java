@@ -19,7 +19,7 @@ public class SeleccionarArchivo {
 		return pathArchivo;
 	}
 	
-public static String sacarPathDirectorio () {
+	public static String sacarPathDirectorio () {
 		
 		File archivoSeleccionado = null;
 		JFileChooser fc_Archivo = new JFileChooser();
