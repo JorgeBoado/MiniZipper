@@ -9,13 +9,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ZipUtils {
+public class Zip {
 
     private List<String> fileList;
     private static String outputZipFile = "Folder.zip";
     private static String sourceFolder = "D:\\c";
 
-    private ZipUtils() {
+    private Zip() {
         fileList = new ArrayList<>();
     }
 
@@ -24,7 +24,7 @@ public class ZipUtils {
         outputZipFile = source + ".zip";
         outputZipFile = source.concat(".zip");
 
-        ZipUtils appZip = new ZipUtils();
+        Zip appZip = new Zip();
         appZip.generateFileList(new File(sourceFolder));
         appZip.zipIt(outputZipFile);
     }
