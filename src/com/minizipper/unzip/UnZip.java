@@ -1,4 +1,4 @@
-package unzip;
+package com.minizipper.unzip;
 
 import java.io.File;
 import java.io.FileInputStream;

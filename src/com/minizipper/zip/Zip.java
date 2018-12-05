@@ -1,4 +1,4 @@
-package zip;
+package com.minizipper.zip;
 
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;

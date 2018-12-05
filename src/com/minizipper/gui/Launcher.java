@@ -1,14 +1,8 @@
 package com.minizipper.gui;
 
-import com.minizipper.gui.GUI.Inicio;
-import com.minizipper.gui.GUI.VentanaCom;
-import com.minizipper.gui.GUI.VentanaDes;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 public class Launcher {
 

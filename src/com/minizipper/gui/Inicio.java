@@ -1,4 +1,4 @@
-package com.minizipper.gui.GUI;
+package com.minizipper.gui;
 
 import javax.swing.*;
 import java.awt.*;

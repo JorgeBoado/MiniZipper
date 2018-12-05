@@ -1,74 +1,76 @@
-package com.minizipper.gui.GUI;
+package com.minizipper.gui;
 
-import javax.swing.*;
 import java.awt.*;
 
-public class VentanaDes {
+import javax.swing.*;
+
+public class VentanaCom {
 
 	private JFrame parentFrame;
 	private JDialog frame;
 	private JTextField txt_Path;
 	private String path;
-	private JPanel pnl_Des;
+	private JPanel pnl_Com;
 	private JLabel lbl_Archivo;
 	private JButton btn_Examinar;
 	private JButton btn_Atras;
 	private JButton btn_Salir;
-	private JButton btn_Descomprimir;
-	private JButton btnLimpiar;
+	private JButton btn_Comprimir;
+	private JButton btn_Limpiar;
 
 
-	public VentanaDes(JFrame parent) {
-		parentFrame = parent;
+	public VentanaCom(JFrame parent) {
+		this.parentFrame = parent;
 		initialize();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	public void initialize() {
+
 		frame = parentFrame!=null ? new JDialog(parentFrame, "", Dialog.ModalityType.APPLICATION_MODAL) : new JDialog();
+
 		frame.setTitle("MiniZipper");
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(new CardLayout(0, 0));
 		
-		pnl_Des = new JPanel();
-		frame.getContentPane().add(pnl_Des, "name_1212786545314710");
-		pnl_Des.setLayout(null);
+		pnl_Com = new JPanel();
+		frame.getContentPane().add(pnl_Com, "name_1212536457471857");
+		pnl_Com.setLayout(null);
 		
 		lbl_Archivo = new JLabel("Archivo:");
 		lbl_Archivo.setBounds(10, 45, 67, 14);
-		pnl_Des.add(lbl_Archivo);
+		pnl_Com.add(lbl_Archivo);
 		
 		txt_Path = new JTextField();
 		txt_Path.setBounds(10, 70, 359, 20);
-		pnl_Des.add(txt_Path);
+		pnl_Com.add(txt_Path);
 		txt_Path.setColumns(10);
 		
 		btn_Examinar = new JButton("...");
 		btn_Examinar.setBounds(379, 69, 45, 23);
-		pnl_Des.add(btn_Examinar);
+		pnl_Com.add(btn_Examinar);
 		
 		btn_Atras = new JButton("Atras");
 
 		btn_Atras.setBounds(10, 11, 67, 23);
-		pnl_Des.add(btn_Atras);
+		pnl_Com.add(btn_Atras);
 		
 		btn_Salir = new JButton("Salir");
 
 		btn_Salir.setBounds(350, 228, 74, 23);
-		pnl_Des.add(btn_Salir);
+		pnl_Com.add(btn_Salir);
 		
-		btn_Descomprimir = new JButton("Descomprimir");
+		btn_Comprimir = new JButton("Comprimir");
 
-		btn_Descomprimir.setBounds(118, 228, 125, 23);
-		pnl_Des.add(btn_Descomprimir);
+		btn_Comprimir.setBounds(118, 228, 125, 23);
+		pnl_Com.add(btn_Comprimir);
 		
-		btnLimpiar = new JButton("Limpiar");
-
-		btnLimpiar.setBounds(253, 228, 87, 23);
-		pnl_Des.add(btnLimpiar);
+		btn_Limpiar = new JButton("Limpiar");
+		btn_Limpiar.setBounds(253, 228, 87, 23);
+		pnl_Com.add(btn_Limpiar);
 	}
 
 	public JFrame getParentFrame() {
@@ -103,12 +105,12 @@ public class VentanaDes {
 		this.path = path;
 	}
 
-	public JPanel getPnl_Des() {
-		return pnl_Des;
+	public JPanel getPnl_Com() {
+		return pnl_Com;
 	}
 
-	public void setPnl_Des(JPanel pnl_Des) {
-		this.pnl_Des = pnl_Des;
+	public void setPnl_Com(JPanel pnl_Com) {
+		this.pnl_Com = pnl_Com;
 	}
 
 	public JLabel getLbl_Archivo() {
@@ -143,19 +145,19 @@ public class VentanaDes {
 		this.btn_Salir = btn_Salir;
 	}
 
-	public JButton getBtn_Descomprimir() {
-		return btn_Descomprimir;
+	public JButton getBtn_Comprimir() {
+		return btn_Comprimir;
 	}
 
-	public void setBtn_Descomprimir(JButton btn_Descomprimir) {
-		this.btn_Descomprimir = btn_Descomprimir;
+	public void setBtn_Comprimir(JButton btn_Comprimir) {
+		this.btn_Comprimir = btn_Comprimir;
 	}
 
-	public JButton getBtnLimpiar() {
-		return btnLimpiar;
+	public JButton getBtn_Limpiar() {
+		return btn_Limpiar;
 	}
 
-	public void setBtnLimpiar(JButton btnLimpiar) {
-		this.btnLimpiar = btnLimpiar;
+	public void setBtn_Limpiar(JButton btn_Limpiar) {
+		this.btn_Limpiar = btn_Limpiar;
 	}
 }
