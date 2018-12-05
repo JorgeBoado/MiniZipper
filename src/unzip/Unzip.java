@@ -4,54 +4,69 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class Unzip {
+public class UnZip {
+    List<String> fileList;
+    private static String INPUT_ZIP_FILE = "C:\\MyFile.zip";
+    private static String OUTPUT_FOLDER = "C:\\outputzip";
 
-    public static void main(String[] args) {
-        String zipFilePath = "/Users/pankaj/tmp.zip";
+    public static void unZip(String source) {
+        INPUT_ZIP_FILE = source;
+        OUTPUT_FOLDER = source.substring(0, source.indexOf(".zip"));
 
-        String destDir = "/Users/pankaj/output";
-
-        unzip(zipFilePath, destDir);
+        UnZip unZip = new UnZip();
+        unZip.unZipIt(INPUT_ZIP_FILE, OUTPUT_FOLDER);
     }
 
-    private static void unzip(String zipFilePath, String destDir) {
-        File dir = new File(destDir);
-        // create output directory if it doesn't exist
-        if(!dir.exists()) dir.mkdirs();
-        FileInputStream fis;
-        //buffer for read and write data to file
+    private void unZipIt(String zipFile, String outputFolder) {
         byte[] buffer = new byte[1024];
+
         try {
-            fis = new FileInputStream(zipFilePath);
-            ZipInputStream zis = new ZipInputStream(fis);
+
+            //create output directory is not exists
+            File folder = new File(OUTPUT_FOLDER);
+            if (!folder.exists()) {
+                folder.mkdir();
+            }
+
+            //get the zip file content
+            ZipInputStream zis =
+                    new ZipInputStream(new FileInputStream(zipFile));
+            //get the zipped file list entry
             ZipEntry ze = zis.getNextEntry();
-            while(ze != null){
+
+            while (ze != null) {
+
                 String fileName = ze.getName();
-                File newFile = new File(destDir + File.separator + fileName);
-                System.out.println("Unzipping to "+newFile.getAbsolutePath());
-                //create directories for sub directories in zip
+                File newFile = new File(outputFolder + File.separator + fileName);
+
+                System.out.println("file unzip : " + newFile.getAbsoluteFile());
+
+                //create all non exists folders
+                //else you will hit FileNotFoundException for compressed folder
                 new File(newFile.getParent()).mkdirs();
+
                 FileOutputStream fos = new FileOutputStream(newFile);
+
                 int len;
                 while ((len = zis.read(buffer)) > 0) {
                     fos.write(buffer, 0, len);
                 }
+
                 fos.close();
-                //close this ZipEntry
-                zis.closeEntry();
                 ze = zis.getNextEntry();
             }
-            //close last ZipEntry
+
             zis.closeEntry();
             zis.close();
-            fis.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            System.out.println("Done");
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
-
     }
-
 }
