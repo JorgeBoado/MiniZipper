@@ -1,6 +1,5 @@
 package zip;
 
-import java.io.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import java.io.File;
@@ -13,22 +12,26 @@ import java.util.List;
 public class ZipUtils {
 
     private List<String> fileList;
-    private static final String OUTPUT_ZIP_FILE = "Folder.zip";
-    private static final String SOURCE_FOLDER = "D:\\c"; // SourceFolder path
+    private static String outputZipFile = "Folder.zip";
+    private static String sourceFolder = "D:\\c";
 
-    public ZipUtils() {
+    private ZipUtils() {
         fileList = new ArrayList<>();
     }
 
-    public static void main(String[] args) {
+    public static void zip(String source) {
+        sourceFolder = source;
+        outputZipFile = source + ".zip";
+        outputZipFile = source.concat(".zip");
+
         ZipUtils appZip = new ZipUtils();
-        appZip.generateFileList(new File(SOURCE_FOLDER));
-        appZip.zipIt(OUTPUT_ZIP_FILE);
+        appZip.generateFileList(new File(sourceFolder));
+        appZip.zipIt(outputZipFile);
     }
 
-    public void zipIt(String zipFile) {
+    private void zipIt(String zipFile) {
         byte[] buffer = new byte[1024];
-        String source = new File(SOURCE_FOLDER).getName();
+        String source = new File(sourceFolder).getName();
         FileOutputStream fos = null;
         ZipOutputStream zos = null;
         try {
@@ -43,7 +46,7 @@ public class ZipUtils {
                 ZipEntry ze = new ZipEntry(source + File.separator + file);
                 zos.putNextEntry(ze);
                 try {
-                    in = new FileInputStream(SOURCE_FOLDER + File.separator + file);
+                    in = new FileInputStream(sourceFolder + File.separator + file);
                     int len;
                     while ((len = in.read(buffer)) > 0) {
                         zos.write(buffer, 0, len);
@@ -67,7 +70,7 @@ public class ZipUtils {
         }
     }
 
-    public void generateFileList(File node) {
+    private void generateFileList(File node) {
         // add file only
         if (node.isFile()) {
             fileList.add(generateZipEntry(node.toString()));
@@ -82,7 +85,7 @@ public class ZipUtils {
     }
 
     private String generateZipEntry(String file) {
-        return file.substring(SOURCE_FOLDER.length() + 1, file.length());
+        return file.substring(sourceFolder.length() + 1, file.length());
     }
 }
 
