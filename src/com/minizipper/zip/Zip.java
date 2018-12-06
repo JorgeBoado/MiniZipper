@@ -25,6 +25,7 @@ public class Zip extends Thread{
     private VentanaComThread window;
     private long totalSize = 0;
     private long procesedSize = 0;
+    private long speedSize = 0;
     private boolean cancel = false;
     private boolean wait = false;
 
@@ -43,6 +44,7 @@ public class Zip extends Thread{
     private void zipIt(String zipFile) {
 
         long time = new Timestamp(System.currentTimeMillis()).getTime()/100;
+        long readed = 0;
 
         byte[] buffer = new byte[1024];
         String source = new File(sourceFolder).getName();
@@ -52,12 +54,12 @@ public class Zip extends Thread{
             fos = new FileOutputStream(zipFile);
             zos = new ZipOutputStream(fos);
 
-            System.out.println("Output to Zip : " + zipFile);
+            //System.out.println("Output to Zip : " + zipFile);
             FileInputStream in = null;
 
             for (String file : this.fileList) {
                 if(cancel) {break;}
-                System.out.println("File Added : " + file);
+                //System.out.println("File Added : " + file);
                 window.getTxtCurrentFile().setText(file);
                 ZipEntry ze = new ZipEntry(source + File.separator + file);
                 zos.putNextEntry(ze);
@@ -71,12 +73,18 @@ public class Zip extends Thread{
                         if(cancel){break;}
                         zos.write(buffer, 0, len);
                         procesedSize+=len;
+                        readed+=len;
+
+                        if((new Timestamp(System.currentTimeMillis()).getTime()/1000)!=time/10){
+                            speedSize = (speedSize+readed)/2;
+                            readed=0;
+                        }
 
                         if((new Timestamp(System.currentTimeMillis()).getTime()/100)!=time){
-                            System.out.println(new Timestamp(System.currentTimeMillis()).getTime()+" -- "+time);
                             updateGUI();
                             time=new Timestamp(System.currentTimeMillis()).getTime()/100;
                         }
+
                     }
                 } finally {
                     in.close();
@@ -84,7 +92,7 @@ public class Zip extends Thread{
             }
 
             zos.closeEntry();
-            System.out.println("Folder successfully compressed");
+            //System.out.println("Folder successfully compressed");
             window.getFrame().dispose();
 
         } catch (IOException ex) {
@@ -154,24 +162,18 @@ public class Zip extends Thread{
         double size = (double)length/1024;
         String[] unit = {" Kb", " Mb", " Gb"};
 
-        //TODO arreglar unidades
         int x=0;
-        while((size%1024)>1.0){
+        for(;size/1024>1; x++){
             size = size/1024;
-            x++;
         }
 
-        if(hasUnit){
-            return (new DecimalFormat("#.##").format(size) + unit[x]);
-        }
-        else{
-            return (new DecimalFormat("#.##").format(size));
-        }
+        return hasUnit ? (new DecimalFormat("#.##").format(size) + unit[x]) : (new DecimalFormat("#.##").format(size));
     }
 
     private void updateGUI(){
         window.getComProBar().setValue((int)((procesedSize*100)/ totalSize));
-        window.getTxtComSize().setText("Total: \t"+toSizeUnit(procesedSize, false)+" / "+toSizeUnit(totalSize, true));
+        window.getTxtComSize().setText("Total: \t"+toSizeUnit(procesedSize, true)+" / "+toSizeUnit(totalSize, true));
+        window.getTxtComSpeed().setText("Velocidad: \t"+toSizeUnit(speedSize, true)+"/s");
     }
 
 }

@@ -8,6 +8,7 @@ public class VentanaComThread {
     private JFrame frame;
     private JPanel panel;
     private JLabel txtComSize;
+    private  JLabel txtComSpeed;
     private JProgressBar ComProBar;
     private JLabel txtCurrentFile;
     private JButton btnCancelar;
@@ -40,12 +41,18 @@ public class VentanaComThread {
 
         txtComSize = new JLabel("");
         txtComSize.setFont(new Font("Tahoma", Font.PLAIN, 12));
-        txtComSize.setBounds(10, 11, 364, 23);
+        txtComSize.setBounds(10, 11, 150, 23);
         panel.add(txtComSize);
+
+        txtComSpeed = new JLabel("");
+        txtComSpeed.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        txtComSpeed.setBounds(224, 11, 150, 23);
+        panel.add(txtComSpeed);
 
         txtCurrentFile = new JLabel("");
         txtCurrentFile.setFont(new Font("Tahoma", Font.PLAIN, 10));
         txtCurrentFile.setBounds(10, 61, 364, 13);
+        txtCurrentFile.setText("Buscando archivos...");
         panel.add(txtCurrentFile);
 
         btnCancelar = new JButton("Cancelar");
@@ -76,6 +83,14 @@ public class VentanaComThread {
 
     public void setTxtComSize(JLabel txtComSize) {
         this.txtComSize = txtComSize;
+    }
+
+    public JLabel getTxtComSpeed() {
+        return txtComSpeed;
+    }
+
+    public void setTxtComSpeed(JLabel txtComSpeed) {
+        this.txtComSpeed = txtComSpeed;
     }
 
     public JProgressBar getComProBar() {
