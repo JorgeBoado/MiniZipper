@@ -4,30 +4,35 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class UnZip {
-    List<String> fileList;
-    private static String INPUT_ZIP_FILE = "C:\\MyFile.zip";
-    private static String OUTPUT_FOLDER = "C:\\outputzip";
+public class UnZip extends Thread{
+    private String inputZipFile;
+    private String outputFolder;
+
+    private UnZip(String source) {
+        inputZipFile = source;
+        outputFolder = source.substring(0, source.indexOf(".zip"));
+    }
 
     public static void unZip(String source) {
-        INPUT_ZIP_FILE = source;
-        OUTPUT_FOLDER = source.substring(0, source.indexOf(".zip"));
+        UnZip unZip = new UnZip(source);
+        unZip.start();
+    }
 
-        UnZip unZip = new UnZip();
-        unZip.unZipIt(INPUT_ZIP_FILE, OUTPUT_FOLDER);
+    @Override
+    public void run() {
+        // TODO implementar ventana
+        unZipIt(inputZipFile, outputFolder);
     }
 
     private void unZipIt(String zipFile, String outputFolder) {
         byte[] buffer = new byte[1024];
 
         try {
-
             //create output directory is not exists
-            File folder = new File(OUTPUT_FOLDER);
+            File folder = new File(outputFolder);
             if (!folder.exists()) {
                 folder.mkdir();
             }

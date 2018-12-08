@@ -3,11 +3,8 @@ package com.minizipper.zip;
 import com.minizipper.gui.VentanaComThread;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
-import java.time.LocalDateTime;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import java.io.File;
@@ -32,7 +29,6 @@ public class Zip extends Thread{
     private Zip(String source) {
         fileList = new ArrayList<>();
         sourceFolder = source;
-        outputZipFile = source + ".zip";
         outputZipFile = source.concat(".zip");
     }
 
@@ -48,14 +44,10 @@ public class Zip extends Thread{
 
         byte[] buffer = new byte[1024];
         String source = new File(sourceFolder).getName();
-        FileOutputStream fos = null;
-        ZipOutputStream zos = null;
-        try {
-            fos = new FileOutputStream(zipFile);
-            zos = new ZipOutputStream(fos);
-
+         //fos = null;
+         //zos = null;
+        try(FileOutputStream fos = new FileOutputStream(zipFile); ZipOutputStream zos = new ZipOutputStream(fos)) {
             //System.out.println("Output to Zip : " + zipFile);
-            FileInputStream in = null;
 
             for (String file : this.fileList) {
                 if(cancel) {break;}
@@ -63,31 +55,30 @@ public class Zip extends Thread{
                 window.getTxtCurrentFile().setText(file);
                 ZipEntry ze = new ZipEntry(source + File.separator + file);
                 zos.putNextEntry(ze);
-                try {
-                    in = new FileInputStream(sourceFolder + File.separator + file);
+                try (FileInputStream in = new FileInputStream(sourceFolder + File.separator + file)) {
                     int len;
                     while ((len = in.read(buffer)) > 0) {
-                        while(wait){
+                        while (wait) {
                             System.out.print("");
                         }
-                        if(cancel){break;}
+                        if (cancel) {
+                            break;
+                        }
                         zos.write(buffer, 0, len);
-                        procesedSize+=len;
-                        readed+=len;
+                        procesedSize += len;
+                        readed += len;
 
-                        if((new Timestamp(System.currentTimeMillis()).getTime()/1000)!=time/10){
-                            speedSize = (speedSize+readed)/2;
-                            readed=0;
+                        if ((new Timestamp(System.currentTimeMillis()).getTime() / 1000) != time / 10) {
+                            speedSize = (speedSize + readed) / 2;
+                            readed = 0;
                         }
 
-                        if((new Timestamp(System.currentTimeMillis()).getTime()/100)!=time){
+                        if ((new Timestamp(System.currentTimeMillis()).getTime() / 100) != time) {
                             updateGUI();
-                            time=new Timestamp(System.currentTimeMillis()).getTime()/100;
+                            time = new Timestamp(System.currentTimeMillis()).getTime() / 100;
                         }
 
                     }
-                } finally {
-                    in.close();
                 }
             }
 
@@ -97,12 +88,6 @@ public class Zip extends Thread{
 
         } catch (IOException ex) {
             ex.printStackTrace();
-        } finally {
-            try {
-                zos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
 
         if (cancel){
@@ -142,18 +127,15 @@ public class Zip extends Thread{
 
     private void setListeners(){
 
-        window.getBtnCancelar().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int confirm;
-                wait = true;
-                confirm = JOptionPane.showConfirmDialog (window.getFrame(), "¿Estas seguro de que deseas cancelar la compresion?","Cancelar",JOptionPane.YES_NO_OPTION);
-                if(confirm==0){
-                    cancel = true;
-                    window.getFrame().dispose();
-                }
-                wait = false;
+        window.getBtnCancelar().addActionListener(e -> {
+            int confirm;
+            wait = true;
+            confirm = JOptionPane.showConfirmDialog (window.getFrame(), "¿Estas seguro de que deseas cancelar la compresion?","Cancelar",JOptionPane.YES_NO_OPTION);
+            if(confirm==0){
+                cancel = true;
+                window.getFrame().dispose();
             }
+            wait = false;
         });
     }
 

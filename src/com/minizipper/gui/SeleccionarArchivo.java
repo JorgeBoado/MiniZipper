@@ -14,9 +14,7 @@ public class SeleccionarArchivo {
 			archivoSeleccionado = fc_Archivo.getSelectedFile();
 		}
 		
-		String pathArchivo = archivoSeleccionado.getAbsolutePath();
-		
-		return pathArchivo;
+		return archivoSeleccionado.getAbsolutePath();
 	}
 	
 	public static String sacarPathDirectorio () {
@@ -28,8 +26,6 @@ public class SeleccionarArchivo {
 			archivoSeleccionado = fc_Archivo.getSelectedFile();
 		}
 		
-		String pathArchivo = archivoSeleccionado.getAbsolutePath();
-		
-		return pathArchivo;
+		return archivoSeleccionado.getAbsolutePath();
 	}
 }
