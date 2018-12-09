@@ -1,30 +1,25 @@
 package com.minizipper.zip;
 
-import com.minizipper.gui.VentanaComThread;
+import com.minizipper.gui.VentanaThread;
+import com.minizipper.zipper.Zipper;
 
 import javax.swing.*;
-import java.sql.Timestamp;
-import java.text.DecimalFormat;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
-public class Zip extends Thread{
+public class Zip extends Zipper {
 
     private List<String> fileList;
     private String outputZipFile;
     private String sourceFolder;
-    private VentanaComThread window;
-    private long totalSize = 0;
-    private long procesedSize = 0;
-    private long speedSize = 0;
-    private boolean cancel = false;
-    private boolean wait = false;
+    private VentanaThread window;
 
     private Zip(String source) {
         fileList = new ArrayList<>();
@@ -37,71 +32,34 @@ public class Zip extends Thread{
         appZip.start();
     }
 
-    private void zipIt(String zipFile) {
+    @Override
+    public void run() {
+        window = new VentanaThread();
+        setListeners();
+        window.getFrame().setVisible(true);
+        generateFileList(new File(sourceFolder));
+        zipIt(outputZipFile);
+    }
 
-        long time = new Timestamp(System.currentTimeMillis()).getTime()/100;
-        long readed = 0;
+    private void setListeners(){
 
-        byte[] buffer = new byte[1024];
-        String source = new File(sourceFolder).getName();
-         //fos = null;
-         //zos = null;
-        try(FileOutputStream fos = new FileOutputStream(zipFile); ZipOutputStream zos = new ZipOutputStream(fos)) {
-            //System.out.println("Output to Zip : " + zipFile);
-
-            for (String file : this.fileList) {
-                if(cancel) {break;}
-                //System.out.println("File Added : " + file);
-                window.getTxtCurrentFile().setText(file);
-                ZipEntry ze = new ZipEntry(source + File.separator + file);
-                zos.putNextEntry(ze);
-                try (FileInputStream in = new FileInputStream(sourceFolder + File.separator + file)) {
-                    int len;
-                    while ((len = in.read(buffer)) > 0) {
-                        while (wait) {
-                            System.out.print("");
-                        }
-                        if (cancel) {
-                            break;
-                        }
-                        zos.write(buffer, 0, len);
-                        procesedSize += len;
-                        readed += len;
-
-                        if ((new Timestamp(System.currentTimeMillis()).getTime() / 1000) != time / 10) {
-                            speedSize = (speedSize + readed) / 2;
-                            readed = 0;
-                        }
-
-                        if ((new Timestamp(System.currentTimeMillis()).getTime() / 100) != time) {
-                            updateGUI();
-                            time = new Timestamp(System.currentTimeMillis()).getTime() / 100;
-                        }
-
-                    }
-                }
+        window.getBtnCancelar().addActionListener(e -> {
+            int confirm;
+            setWait(true);
+            confirm = JOptionPane.showConfirmDialog (window.getFrame(), "¿Estas seguro de que deseas cancelar la compresion?","Cancelar",JOptionPane.YES_NO_OPTION);
+            if(confirm==0){
+                setCancel(true);
+                window.getFrame().dispose();
             }
-
-            zos.closeEntry();
-            //System.out.println("Folder successfully compressed");
-            window.getFrame().dispose();
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-        if (cancel){
-            File delFile = new File(outputZipFile);
-            delFile.delete();
-        }
-
+            setWait(false);
+        });
     }
 
     private void generateFileList(File node) {
         // add file only
         if (node.isFile()) {
             fileList.add(generateZipEntry(node.toString()));
-            totalSize +=node.length();
+            setTotalSize(getTotalSize()+node.length());
         }
 
         if (node.isDirectory()) {
@@ -116,47 +74,59 @@ public class Zip extends Thread{
         return file.substring(sourceFolder.length() + 1, file.length());
     }
 
-    @Override
-    public void run() {
-        window = new VentanaComThread();
-        setListeners();
-        window.getFrame().setVisible(true);
-        generateFileList(new File(sourceFolder));
-        zipIt(outputZipFile);
-    }
+    private void zipIt(String zipFile) {
 
-    private void setListeners(){
+        setTime(new Timestamp(System.currentTimeMillis()).getTime() / 100);
 
-        window.getBtnCancelar().addActionListener(e -> {
-            int confirm;
-            wait = true;
-            confirm = JOptionPane.showConfirmDialog (window.getFrame(), "¿Estas seguro de que deseas cancelar la compresion?","Cancelar",JOptionPane.YES_NO_OPTION);
-            if(confirm==0){
-                cancel = true;
-                window.getFrame().dispose();
+        byte[] buffer = new byte[1024];
+        String source = new File(sourceFolder).getName();
+        //fos = null;
+        //zos = null;
+        try(FileOutputStream fos = new FileOutputStream(zipFile); ZipOutputStream zos = new ZipOutputStream(fos)) {
+            //System.out.println("Output to Zip : " + zipFile);
+
+            for (String file : this.fileList) {
+                if(isCancel()) {break;}
+                //System.out.println("File Added : " + file);
+                window.getTxtCurrentFile().setText(file);
+                ZipEntry ze = new ZipEntry(source + File.separator + file);
+                zos.putNextEntry(ze);
+                try (FileInputStream in = new FileInputStream(sourceFolder + File.separator + file)) {
+                    int len;
+                    while ((len = in.read(buffer)) > 0) {
+                        while (isWait()) {
+                            System.out.print("");
+                        }
+                        if (isCancel()) {
+                            break;
+                        }
+                        zos.write(buffer, 0, len);
+                        setProcesedSize(getProcesedSize()+len);
+                        setReaded(getReaded()+len);
+
+                        long[] values = window.refreshGUI((Zipper) this);
+                        setSpeedSize(values[0]);
+                        setReaded(values[1]);
+                        setTime(values[2]);
+                    }
+                }
             }
-            wait = false;
-        });
-    }
 
-    private String toSizeUnit(long length, boolean hasUnit){
+            zos.closeEntry();
+            //System.out.println("Folder successfully compressed");
+            window.getFrame().dispose();
 
-        double size = (double)length/1024;
-        String[] unit = {" Kb", " Mb", " Gb"};
-
-        int x=0;
-        for(;size/1024>1; x++){
-            size = size/1024;
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
 
-        return hasUnit ? (new DecimalFormat("#.##").format(size) + unit[x]) : (new DecimalFormat("#.##").format(size));
+        if (isCancel()){
+            File delFile = new File(outputZipFile);
+            delFile.delete();
+        }
     }
 
-    private void updateGUI(){
-        window.getComProBar().setValue((int)((procesedSize*100)/ totalSize));
-        window.getTxtComSize().setText("Total: \t"+toSizeUnit(procesedSize, true)+" / "+toSizeUnit(totalSize, true));
-        window.getTxtComSpeed().setText("Velocidad: \t"+toSizeUnit(speedSize, true)+"/s");
-    }
+
 
 }
 
