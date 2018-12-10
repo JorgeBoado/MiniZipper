@@ -23,6 +23,9 @@ public class UnZip extends Zipper {
     }
 
     public static void unZip(String source) {
+        if (source == null) {
+            return;
+        }
         UnZip unZip = new UnZip(source);
         unZip.start();
     }
@@ -30,6 +33,7 @@ public class UnZip extends Zipper {
     @Override
     public void run() {
         window = new VentanaThread();
+        window.getFrame().setTitle("Comprimiendo: " + inputZipFile + " en " + outputFolder + " . . .");
         setListeners();
         window.getFrame().setVisible(true);
         setTotalSize(new File(inputZipFile).length());

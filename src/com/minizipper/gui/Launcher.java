@@ -73,7 +73,6 @@ public class Launcher {
         ventanaDes.getBtn_Descomprimir().addActionListener(e -> {
             UnZip.unZip(ventanaDes.getPath());
             ventanaDes.getFrame().dispose();
-            // TODO generar una ventana para saber que se esta descomprimiendo
         });
 
         ventanaDes.getBtnLimpiar().addActionListener(e -> ventanaDes.getTxt_Path().setText(""));

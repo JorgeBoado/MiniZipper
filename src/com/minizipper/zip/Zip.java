@@ -28,6 +28,9 @@ public class Zip extends Zipper {
     }
 
     public static void zip(String source) {
+        if (source == null) {
+            return;
+        }
         Zip appZip = new Zip(source);
         appZip.start();
     }
@@ -35,6 +38,7 @@ public class Zip extends Zipper {
     @Override
     public void run() {
         window = new VentanaThread();
+        window.getFrame().setTitle("Comprimiendo: " + sourceFolder + " en " + outputZipFile + " . . .");
         setListeners();
         window.getFrame().setVisible(true);
         generateFileList(new File(sourceFolder));

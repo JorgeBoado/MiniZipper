@@ -13,8 +13,11 @@ public class SeleccionarArchivo {
 		if (fc_Archivo.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 			archivoSeleccionado = fc_Archivo.getSelectedFile();
 		}
-		
-		return archivoSeleccionado.getAbsolutePath();
+
+		if (archivoSeleccionado != null) {
+			return archivoSeleccionado.getAbsolutePath();
+		}
+		return null;
 	}
 	
 	public static String sacarPathDirectorio () {
@@ -25,7 +28,10 @@ public class SeleccionarArchivo {
 		if (fc_Archivo.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 			archivoSeleccionado = fc_Archivo.getSelectedFile();
 		}
-		
-		return archivoSeleccionado.getAbsolutePath();
+
+		if (archivoSeleccionado != null) {
+			return archivoSeleccionado.getAbsolutePath();
+		}
+		return null;
 	}
 }
