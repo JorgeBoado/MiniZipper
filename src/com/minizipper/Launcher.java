@@ -16,7 +16,7 @@ public class Launcher {
     private static VentanaDescompresion ventanaDescompresion;
 
     /**
-     * Launch the application.
+     * Launch the application
      */
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
