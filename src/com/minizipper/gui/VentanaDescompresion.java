@@ -3,7 +3,7 @@ package com.minizipper.gui;
 import javax.swing.*;
 import java.awt.*;
 
-public class VentanaDes {
+public class VentanaDescompresion {
 
 	private JFrame parentFrame;
 	private JDialog frame;
@@ -18,7 +18,7 @@ public class VentanaDes {
 	private JButton btnLimpiar;
 
 
-	public VentanaDes(JFrame parent) {
+	public VentanaDescompresion(JFrame parent) {
 		parentFrame = parent;
 		initialize();
 	}

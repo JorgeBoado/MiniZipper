@@ -1,6 +1,6 @@
 package com.minizipper.unzip;
 
-import com.minizipper.gui.VentanaThread;
+import com.minizipper.gui.VentanaProgreso;
 import com.minizipper.zipper.Zipper;
 
 import javax.swing.*;
@@ -15,7 +15,7 @@ import java.util.zip.ZipInputStream;
 public class UnZip extends Zipper {
     private String inputZipFile;
     private String outputFolder;
-    private VentanaThread window;
+    private VentanaProgreso window;
 
     private UnZip(String source) {
         inputZipFile = source;
@@ -32,7 +32,7 @@ public class UnZip extends Zipper {
 
     @Override
     public void run() {
-        window = new VentanaThread();
+        window = new VentanaProgreso();
         window.getFrame().setTitle("Comprimiendo: " + inputZipFile + " en " + outputFolder + " . . .");
         setListeners();
         window.getFrame().setVisible(true);
@@ -100,7 +100,7 @@ public class UnZip extends Zipper {
                     setProcesedSize(getProcesedSize()+len);
                     setReaded(getReaded()+len);
 
-                    long[] values = window.refreshGUI((Zipper) this);
+                    long[] values = window.refreshGUI(this);
                     setSpeedSize(values[0]);
                     setReaded(values[1]);
                     setTime(values[2]);

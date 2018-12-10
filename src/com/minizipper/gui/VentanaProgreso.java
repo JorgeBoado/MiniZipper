@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import javax.swing.*;
 
-public class VentanaThread {
+public class VentanaProgreso {
 
     private JFrame frame;
     private JPanel panel;
@@ -17,7 +17,7 @@ public class VentanaThread {
     private JLabel txtCurrentFile;
     private JButton btnCancelar;
 
-    public VentanaThread() {
+    public VentanaProgreso() {
         initialize();
     }
 

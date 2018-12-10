@@ -1,6 +1,6 @@
 package com.minizipper.zip;
 
-import com.minizipper.gui.VentanaThread;
+import com.minizipper.gui.VentanaProgreso;
 import com.minizipper.zipper.Zipper;
 
 import javax.swing.*;
@@ -19,7 +19,7 @@ public class Zip extends Zipper {
     private List<String> fileList;
     private String outputZipFile;
     private String sourceFolder;
-    private VentanaThread window;
+    private VentanaProgreso window;
 
     private Zip(String source) {
         fileList = new ArrayList<>();
@@ -37,7 +37,7 @@ public class Zip extends Zipper {
 
     @Override
     public void run() {
-        window = new VentanaThread();
+        window = new VentanaProgreso();
         window.getFrame().setTitle("Comprimiendo: " + sourceFolder + " en " + outputZipFile + " . . .");
         setListeners();
         window.getFrame().setVisible(true);

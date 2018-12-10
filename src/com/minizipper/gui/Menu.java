@@ -3,7 +3,7 @@ package com.minizipper.gui;
 import javax.swing.*;
 import java.awt.*;
 
-public class Inicio {
+public class Menu {
 
 	private JFrame frame;
 	private JPanel pnl_Inicio;
@@ -15,7 +15,7 @@ public class Inicio {
 	/**
 	 * Create the application.
 	 */
-	public Inicio() {
+	public Menu() {
 		initialize();
 	}
 

@@ -4,7 +4,7 @@ import java.io.File;
 
 import javax.swing.JFileChooser;
 
-public class SeleccionarArchivo {
+public class VentanaSelector {
 	
 	public static String sacarPathArchivo () {
 		
