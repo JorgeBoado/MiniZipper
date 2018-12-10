@@ -4,12 +4,11 @@ import com.minizipper.gui.VentanaProgreso;
 import com.minizipper.zipper.Zipper;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.sql.Timestamp;
+import java.util.Enumeration;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 public class UnZip extends Zipper {
@@ -36,7 +35,18 @@ public class UnZip extends Zipper {
         window.getFrame().setTitle("Comprimiendo: " + inputZipFile + " en " + outputFolder + " . . .");
         setListeners();
         window.getFrame().setVisible(true);
-        setTotalSize(new File(inputZipFile).length());
+        long totalSize = 0;
+        try (ZipFile zf = new ZipFile(inputZipFile)) {
+
+            Enumeration zes = zf.entries();
+            while(zes.hasMoreElements()){
+                ZipEntry ze = (ZipEntry) zes.nextElement();
+                totalSize+=ze.getSize();
+            }
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        setTotalSize(totalSize);
         unZipIt(inputZipFile, outputFolder);
     }
 
@@ -68,11 +78,20 @@ public class UnZip extends Zipper {
             }
 
             //get the zip file content
-            ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
-            //get the zipped file list entry
-            ZipEntry ze = zis.getNextEntry();
 
-            while (ze != null) {
+            ZipFile zf = new ZipFile(zipFile);
+            InputStream zis = new InputStream() {
+                @Override
+                public int read() throws IOException {
+                    return 0;
+                }
+            };
+            Enumeration zipEntries = zf.entries();
+
+            while(zipEntries.hasMoreElements()){
+                ZipEntry ze = (ZipEntry) zipEntries.nextElement();
+                zis = zf.getInputStream(ze);
+                //System.out.println(ze.getName()+" --- "+ze.getCompressedSize()+" --- "+ze.getSize());
 
                 while (isWait()) {
                     System.out.print("");
@@ -91,8 +110,6 @@ public class UnZip extends Zipper {
 
                 FileOutputStream fos = new FileOutputStream(newFile);
 
-                //TODO: Arreglar problema de diferencia de tamaños debido a la compresion, o modificar GUI
-
                 int len;
                 while ((len = zis.read(buffer)) > 0) {
                     fos.write(buffer, 0, len);
@@ -104,14 +121,10 @@ public class UnZip extends Zipper {
                     setSpeedSize(values[0]);
                     setReaded(values[1]);
                     setTime(values[2]);
-
                 }
 
                 fos.close();
-                ze = zis.getNextEntry();
             }
-
-            zis.closeEntry();
             zis.close();
 
             window.getFrame().dispose();

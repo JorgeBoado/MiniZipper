@@ -114,9 +114,11 @@ public class Zip extends Zipper {
                         setTime(values[2]);
                     }
                 }
+                zos.closeEntry();
             }
 
-            zos.closeEntry();
+
+
             //System.out.println("Folder successfully compressed");
             window.getFrame().dispose();
 
